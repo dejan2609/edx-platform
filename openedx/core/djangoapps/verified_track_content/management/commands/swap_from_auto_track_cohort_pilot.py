@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
         module_store = modulestore()
 
-        print "Starting Swap from Auto Track Cohort Pilot"
+        print "Starting Swap from Auto Track Cohort Pilot command"
 
         verified_track_cohorts_settings = self._enabled_settings()
 
@@ -141,6 +141,11 @@ class Command(BaseCommand):
 
             items = module_store.get_items(rerun_course_key)
             items_to_update = []
+
+            all_cohorted_track_group_ids = set()
+            for audit_course_user_group_partition_group in random_audit_course_user_group_partition_groups:
+                all_cohorted_track_group_ids.add(audit_course_user_group_partition_group.group_id)
+                all_cohorted_track_group_ids.add(verified_course_user_group_partition_group.group_id)
             if not items:
                 raise CommandError("Items for Course with key '%s' not found." % rerun_course_key)
 
@@ -169,7 +174,18 @@ class Command(BaseCommand):
                     )
                     if (verified_partition_group_access
                             and verified_course_user_group_partition_group.group_id in verified_partition_group_access):
-                        set_verified_enrollment_track = True
+                        # If the item has group_access that is not the
+                        # verified or audit group IDs then raise an error
+                        # This only needs to be checked for this partition_group once
+                        non_verified_track_access_groups = set(verified_partition_group_access) \
+                                                           - all_cohorted_track_group_ids
+                        if non_verified_track_access_groups:
+                            errors.append(
+                                "Non audit/verified cohorted content group set for xblock, location '%s' with IDs '%s'"
+                                % (item.location, non_verified_track_access_groups)
+                            )
+                        else:
+                            set_verified_enrollment_track = True
 
                     # Add the enrollment track ids to a group access array
                     enrollment_track_group_access = []
@@ -240,7 +256,7 @@ class Command(BaseCommand):
             # If there are any errors, join them together and raise the CommandError
             if errors:
                 raise CommandError(
-                    ("Error for MigrateVerifiedTrackCohortsSetting with ID='%s'" % verified_track_cohorts_setting.id) +
+                    ("Error for MigrateVerifiedTrackCohortsSetting with ID='%s'\n" % verified_track_cohorts_setting.id) +
                     "\t\n".join(errors)
                 )
 
