@@ -61,7 +61,7 @@ class TestEnterpriseApi(unittest.TestCase):
     @override_settings(ENABLE_ENTERPRISE_INTEGRATION=True)
     @mock.patch('openedx.features.enterprise_support.api.EnterpriseCustomer')
     @mock.patch('openedx.features.enterprise_support.api.Registry')
-    @mock.patch('openedx.features.enterprise_support.api.pipeline')
+    @mock.patch('openedx.features.enterprise_support.api.get_partial_pipeline')
     def test_get_enterprise_customer_for_request_from_pipeline(self, pipeline_mock, registry_mock, ec_class_mock):
         """
         Test that the correct EnterpriseCustomer, if any, is returned when
@@ -72,20 +72,17 @@ class TestEnterpriseApi(unittest.TestCase):
             provider_id = kwargs.get(by_provider_id_kw, '')
             uuid = kwargs.get('uuid', '')
             if uuid == 'real-uuid' or provider_id == 'real-provider-id':
+                # Only return the good value if we get the parameter we expect.
                 return 'this-is-actually-an-enterprise-customer'
-            elif uuid == 'not-a-uuid':
-                raise ValueError
-            else:
-                raise Exception
 
         ec_class_mock.DoesNotExist = Exception
         ec_class_mock.objects.get.side_effect = get_ec_mock
 
         # Truthy value from the pipeline getter to imitate a running pipeline
-        pipeline_mock.get.return_value = {"fake_pipeline": "sofake"}
+        pipeline_mock.return_value = {"fake_pipeline": "sofake"}
 
         provider_mock = registry_mock.get_from_pipeline.return_value
-        provider_mock.provider_id = 'real-uuid'
+        provider_mock.provider_id = 'real-provider-id'
 
         request = mock.MagicMock()
 

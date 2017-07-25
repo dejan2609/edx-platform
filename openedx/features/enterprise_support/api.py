@@ -22,6 +22,8 @@ from openedx.core.djangoapps.catalog.models import CatalogIntegration
 from openedx.core.djangoapps.catalog.utils import create_catalog_api_client
 from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 from openedx.core.lib.token_utils import JwtBuilder
+from third_party_auth.pipeline import get as get_partial_pipeline
+from third_party_auth.provider import Registry
 
 try:
     from enterprise import utils as enterprise_utils
@@ -240,6 +242,10 @@ def enterprise_customer_for_request(request, tpa_hint=None):
         return None
 
     ec = None
+
+    running_pipeline = get_partial_pipeline(request)
+    if running_pipeline:
+        tpa_hint = Registry.get_from_pipeline(running_pipeline).provider_id
 
     if tpa_hint:
         try:
