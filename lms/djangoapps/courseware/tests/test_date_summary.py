@@ -19,7 +19,7 @@ from courseware.date_summary import (
     VerificationDeadlineDate,
     VerifiedUpgradeDeadlineDate
 )
-from courseware.models import DynamicUpgradeDeadlineConfiguration
+from courseware.models import DynamicUpgradeDeadlineConfiguration, CourseDynamicUpgradeDeadlineConfiguration
 from lms.djangoapps.verify_student.models import VerificationDeadline
 from lms.djangoapps.verify_student.tests.factories import SoftwareSecurePhotoVerificationFactory
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
@@ -401,6 +401,8 @@ class CourseDateSummaryTest(SharedModuleStoreTestCase):
         self.store.update_item(self.course, self.user.id)
         overview = CourseOverview.get_from_id(self.course.id)
         self.assertTrue(overview.self_paced)
+
+        # CourseDynamicUpgradeDeadlineConfiguration.current(self.course.id).save()
 
     def test_date_with_self_paced(self):
         """ The date returned for self-paced course runs should be dependent on the learner's enrollment date. """

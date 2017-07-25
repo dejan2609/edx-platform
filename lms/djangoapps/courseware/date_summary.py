@@ -14,7 +14,7 @@ from lazy import lazy
 from pytz import timezone, utc
 
 from course_modes.models import CourseMode
-from courseware.models import DynamicUpgradeDeadlineConfiguration
+from courseware.models import DynamicUpgradeDeadlineConfiguration, CourseDynamicUpgradeDeadlineConfiguration
 from lms.djangoapps.commerce.utils import EcommerceService
 from lms.djangoapps.verify_student.models import SoftwareSecurePhotoVerification, VerificationDeadline
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
@@ -258,11 +258,25 @@ class VerifiedUpgradeDeadlineDate(DateSummary):
     def date(self):
 
         if self.course_overview.self_paced and self.enrollment:
-            dynamic_deadline_config = DynamicUpgradeDeadlineConfiguration.current()
-            if dynamic_deadline_config.enabled:
-                # TODO Check for opt-out
-                start = max(self.enrollment.created, self.course_overview.start)
-                return start + datetime.timedelta(days=dynamic_deadline_config.deadline_days)
+            # Check if dynamic upgrade deadlines are enabled for the site
+            global_config = DynamicUpgradeDeadlineConfiguration.current()
+            if global_config.enabled:
+
+                # Check if the given course has opted out of the feature
+                course_config = CourseDynamicUpgradeDeadlineConfiguration.current(self.course.id)
+                if not course_config.opt_out:
+                    # The start date is the content availability date--the first date on which the user could
+                    # access the content. This will be the later of either the enrollment date or the
+                    # course's start date.
+                    start = max(self.enrollment.created, self.course_overview.start)
+
+                    # If the course doesn't have an override for the number of days a learner has to upgrade,
+                    # use the site-wide value.
+                    delta = course_config.deadline_days or global_config.deadline_days
+
+                    # TODO If the calculated date occurs on or after the verified mode's expiration date,
+                    # default to the mode's expiration.
+                    return start + datetime.timedelta(days=delta)
 
         try:
             verified_mode = CourseMode.objects.get(

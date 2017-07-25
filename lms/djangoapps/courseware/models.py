@@ -370,3 +370,18 @@ class DynamicUpgradeDeadlineConfiguration(ConfigurationModel):
         default=21,
         help_text=_('Number of days a learner has to upgrade after content is made available')
     )
+
+
+class CourseDynamicUpgradeDeadlineConfiguration(ConfigurationModel):
+    KEY_FIELDS = ('course_id',)
+
+    course_id = CourseKeyField(max_length=255, db_index=True)
+    deadline_days = models.PositiveSmallIntegerField(
+        null=True,
+        default=None,
+        help_text=_('Number of days a learner has to upgrade after content is made available')
+    )
+    opt_out = models.BooleanField(
+        default=False,
+        help_text=_('Disable the dynamic upgrade deadline for this course run.')
+    )
