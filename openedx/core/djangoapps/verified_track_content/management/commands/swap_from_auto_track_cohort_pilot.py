@@ -231,9 +231,10 @@ class Command(BaseCommand):
                                 group_index = partition.groups.index(matching_groups[0])
                                 partition.groups.pop(group_index)
                                 # Update the course user partition with the updated groups
-                                course.user_partitions[partition_index] = partition
-                            else:
-                                course.user_partitions.pop(partition_index)
+                                if partition.groups:
+                                    course.user_partitions[partition_index] = partition
+                                else:
+                                    course.user_partitions.pop(partition_index)
                             module_store.update_item(course, ModuleStoreEnum.UserID.mgmt_command)
 
             # If there are any errors, join them together and raise the CommandError
