@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('contentstore', '0001_initial'),
+        ('verified_track_content', '0002_verifiedtrackcohortedcourse_verified_cohort_name'),
     ]
 
     operations = [
