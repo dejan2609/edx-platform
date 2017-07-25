@@ -42,7 +42,7 @@ class Command(BaseCommand):
 
             # Verify that the MigrateVerifiedTrackCohortsSetting
             if not old_course_key:
-                raise CommandError("No old_course_key set for MigrateVerifiedTrackCohortsSetting with ID: %s"
+                raise CommandError("No old_course_key set for MigrateVerifiedTrackCohortsSetting with ID: '%s'"
                                    % verified_track_cohorts_settings.id)
 
             if not rerun_course_key:
@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 raise CommandError("No audit_cohort_names set for MigrateVerifiedTrackCohortsSetting with ID: '%s'"
                                    % verified_track_cohorts_settings.id)
 
-            print "Running for MigrateVerifiedTrackCohortsSetting with ID='%s" % verified_track_cohorts_setting.id
+            print "Running for MigrateVerifiedTrackCohortsSetting with ID='%s'" % verified_track_cohorts_setting.id
 
             # Get the CourseUserGroup IDs for the audit course names from the old course
             audit_course_user_group_ids = CourseUserGroup.objects.filter(
@@ -96,7 +96,7 @@ class Command(BaseCommand):
             try:
                 verified_track_cohorted_course = VerifiedTrackCohortedCourse.objects.get(course_key=old_course_key)
             except VerifiedTrackCohortedCourse.DoesNotExist:
-                raise CommandError("No VerifiedTrackCohortedCourse found for course: '%s'" % rerun_course_key)
+                raise CommandError("No VerifiedTrackCohortedCourse found for course: '%s'" % old_course_key)
 
             # Get the single CourseUserGroupPartitionGroup for the verified_track
             # based on the verified_track name for the old course
