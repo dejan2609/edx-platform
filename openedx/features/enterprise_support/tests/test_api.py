@@ -25,7 +25,8 @@ class TestEnterpriseApi(unittest.TestCase):
 
     @override_settings(ENABLE_ENTERPRISE_INTEGRATION=True)
     @mock.patch('openedx.features.enterprise_support.api.EnterpriseCustomer')
-    def test_enterprise_customer_for_request(self, ec_class_mock):
+    @mock.patch('openedx.features.enterprise_support.api.get_partial_pipeline')
+    def test_enterprise_customer_for_request(self, pipeline_mock, ec_class_mock):
         """
         Test that the correct EnterpriseCustomer, if any, is returned.
         """
@@ -42,6 +43,8 @@ class TestEnterpriseApi(unittest.TestCase):
 
         ec_class_mock.DoesNotExist = Exception
         ec_class_mock.objects.get.side_effect = get_ec_mock
+
+        pipeline_mock.return_value = None
 
         request = mock.MagicMock()
         request.GET.get.return_value = 'real-uuid'
