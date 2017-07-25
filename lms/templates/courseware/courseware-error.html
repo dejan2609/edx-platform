@@ -13,13 +13,14 @@ from openedx.core.djangolib.markup import HTML, Text
 <%static:css group='style-course'/>
 </%block>
 
-<%include file="/courseware/course_navigation.html" args="active_page='courseware'" />
+<%doc>
+<%include file="/courseware/course_navigation.html" args="active_page='courseware'" /></%doc>
 
 <section class="container">
   <section class="outside-app">
     <h1>
       ${_('There has been an error on the {platform_name} servers').format(
-          platform_name=u'<span class="edx">{}</span>'.format(settings.PLATFORM_NAME)
+          platform_name=u'<span class="edx">{}</span>'.format(Text(static.get_platform_name()))
       )}
     </h1>
     <p>

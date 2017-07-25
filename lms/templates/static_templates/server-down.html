@@ -10,7 +10,7 @@ from openedx.core.djangolib.markup import HTML, Text
     <section class="outside-app">
       <h1>
         ${Text(_("Currently the {platform_name} servers are down")).format(
-            platform_name=HTML(u"<em>{}</em>").format(Text(settings.PLATFORM_NAME))
+            platform_name=HTML(u"<em>{}</em>").format(Text(static.get_platform_name()))
         )}
       </h1>
       <p>
