@@ -3,6 +3,10 @@
 <%namespace name='static' file='../static_content.html'/>
 <%block name="bodyclass">courseware</%block>
 <%block name="pagetitle">${_("Courseware")}</%block>
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML, Text
+%>
 
 <%block name="headextra">
 <%static:css group='style-course-vendor'/>

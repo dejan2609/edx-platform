@@ -1,6 +1,9 @@
 ## mako
 <%namespace name='static' file='../static_content.html'/>
-<%! from django.utils.translation import ugettext as _ %>
+<%!
+from django.utils.translation import ugettext as _
+from openedx.core.djangolib.markup import HTML, Text
+%>
 <%
     tech_support_email='<a href=\"mailto:{tech_support_email}\">{tech_support_email}</a>'.format(tech_support_email=Text(static.get_tech_support_email_address()))
 %>
