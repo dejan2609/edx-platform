@@ -24,6 +24,7 @@ class PythonTestSuite(TestSuite):
 
     def __enter__(self):
         super(PythonTestSuite, self).__enter__()
+        os.environ['IGNORE_WEBPACK'] = '1'
 
         if self.disable_migrations:
             os.environ['DISABLE_MIGRATIONS'] = '1'
