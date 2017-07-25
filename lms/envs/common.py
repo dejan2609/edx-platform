@@ -1968,11 +1968,6 @@ YOUTUBE_API_KEY = None
 
 ################################### APPS ######################################
 
-webpack_loader = 'webpack_loader'
-# Override the webpack_loader package with our mock, if specified.
-if os.environ.get('SKIP_WEBPACK'):
-    webpack_loader = 'openedx.tests.util.webpack_loader'
-
 INSTALLED_APPS = (
     # Standard ones that are always installed...
     'django.contrib.auth',
@@ -2005,7 +2000,7 @@ INSTALLED_APPS = (
     'edxmako',
     'pipeline',
     'static_replace',
-    webpack_loader,
+    'webpack_loader',
 
     # For user interface plugins
     'web_fragments',

@@ -877,11 +877,6 @@ VIDEO_UPLOAD_PIPELINE = {
 
 ############################ APPS #####################################
 
-webpack_loader = 'webpack_loader'
-# Override the webpack_loader package with our mock, if specified.
-if os.environ.get('SKIP_WEBPACK'):
-    webpack_loader = 'openedx.tests.util.webpack_loader'
-
 INSTALLED_APPS = (
     # Standard apps
     'django.contrib.auth',
@@ -936,7 +931,7 @@ INSTALLED_APPS = (
     'pipeline',
     'static_replace',
     'require',
-    webpack_loader,
+    'webpack_loader',
 
     # Theming
     'openedx.core.djangoapps.theming',
