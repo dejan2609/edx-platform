@@ -40,7 +40,7 @@ class Command(BaseCommand):
             rerun_course_key = verified_track_cohorts_setting.rerun_course_key
             audit_cohort_names = verified_track_cohorts_setting.get_audit_cohort_names()
 
-            # Verify that the MigrateVerifiedTrackCohortsSetting
+            # Verify that the MigrateVerifiedTrackCohortsSetting has all required fields
             if not old_course_key:
                 raise CommandError("No old_course_key set for MigrateVerifiedTrackCohortsSetting with ID: '%s'"
                                    % verified_track_cohorts_settings.id)
