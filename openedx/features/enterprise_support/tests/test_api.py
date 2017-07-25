@@ -58,6 +58,39 @@ class TestEnterpriseApi(unittest.TestCase):
         self.assertEqual(enterprise_customer_for_request(request, tpa_hint='fake-provider-id'), None)
         self.assertEqual(enterprise_customer_for_request(request, tpa_hint=None), None)
 
+    @override_settings(ENABLE_ENTERPRISE_INTEGRATION=True)
+    @mock.patch('openedx.features.enterprise_support.api.EnterpriseCustomer')
+    @mock.patch('openedx.features.enterprise_support.api.Registry')
+    @mock.patch('openedx.features.enterprise_support.api.pipeline')
+    def test_get_enterprise_customer_for_request_from_pipeline(self, pipeline_mock, registry_mock, ec_class_mock):
+        """
+        Test that the correct EnterpriseCustomer, if any, is returned when
+        the user is in the middle of a third-party auth pipeline.
+        """
+        def get_ec_mock(**kwargs):
+            by_provider_id_kw = 'enterprise_customer_identity_provider__provider_id'
+            provider_id = kwargs.get(by_provider_id_kw, '')
+            uuid = kwargs.get('uuid', '')
+            if uuid == 'real-uuid' or provider_id == 'real-provider-id':
+                return 'this-is-actually-an-enterprise-customer'
+            elif uuid == 'not-a-uuid':
+                raise ValueError
+            else:
+                raise Exception
+
+        ec_class_mock.DoesNotExist = Exception
+        ec_class_mock.objects.get.side_effect = get_ec_mock
+
+        # Truthy value from the pipeline getter to imitate a running pipeline
+        pipeline_mock.get.return_value = {"fake_pipeline": "sofake"}
+
+        provider_mock = registry_mock.get_from_pipeline.return_value
+        provider_mock.provider_id = 'real-uuid'
+
+        request = mock.MagicMock()
+
+        self.assertEqual(enterprise_customer_for_request(request), 'this-is-actually-an-enterprise-customer')
+
     def check_data_sharing_consent(self, consent_required=False, consent_url=None):
         """
         Used to test the data_sharing_consent_required view decorator.
