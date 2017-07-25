@@ -238,7 +238,10 @@ class Command(BaseCommand):
 
             # If there are any errors, join them together and raise the CommandError
             if errors:
-                raise CommandError("\n".join(errors))
+                raise CommandError(
+                    ("Error for MigrateVerifiedTrackCohortsSetting with ID='%s'" % verified_track_cohorts_setting.id) +
+                    "\t\n".join(errors)
+                )
 
             print "Finished for MigrateVerifiedTrackCohortsSetting with ID='%s" % verified_track_cohorts_setting.id
 
