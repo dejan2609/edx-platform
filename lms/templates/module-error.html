@@ -1,4 +1,5 @@
 <%! from django.utils.translation import ugettext as _ %>
+<%namespace name='static' file='../static_content.html'/>
 
 <section class="outside-app">
   <h1>
@@ -10,7 +11,7 @@
     ${_("We're sorry, this module is temporarily unavailable. Our staff is working "
     "to fix it as soon as possible. Please email us at {tech_support_email} to "
     "report any problems or downtime.").format(
-        tech_support_email=u"<a href=\"mailto:{0}\">{0}</a>".format(settings.TECH_SUPPORT_EMAIL)
+        tech_support_email=u"<a href=\"mailto:{0}\">{0}</a>".format(Text(static.get_tech_support_email_address()))
     )}
   </p>
 
