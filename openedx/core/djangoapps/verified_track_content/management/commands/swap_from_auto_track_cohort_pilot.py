@@ -32,7 +32,7 @@ class Command(BaseCommand):
         verified_track_cohorts_setting = self._latest_settings()
 
         if not verified_track_cohorts_setting:
-            raise CommandError("No 'enabled' MigrateVerifiedTrackCohortsSetting found")
+            raise CommandError("No MigrateVerifiedTrackCohortsSetting found")
 
         old_course_key = verified_track_cohorts_setting.old_course_key
         rerun_course_key = verified_track_cohorts_setting.rerun_course_key
