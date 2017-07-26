@@ -59,7 +59,7 @@ var StaffDebug = (function() {
                 var text = _.template('{error_msg} {error}', {interpolate: /\{(.+?)\}/g})(
                     {
                         error_msg: action.error_msg,
-                        error: responseJSON.error
+                        error: responseJSON
                     }
             );
                 var html = _.template('<p id="idash_msg" class="error">{text}</p>', {interpolate: /\{(.+?)\}/g})(
